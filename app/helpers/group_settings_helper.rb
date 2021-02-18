@@ -12,4 +12,12 @@ module GroupSettingsHelper
       method: :patch }
   end
 
+  def group_setting_attrs
+    entry.attrs.reject { |a| a.match?(/picture/) }
+  end
+
+  def group_setting_picture_attrs
+    entry.attrs.select { |a| a.match?(/picture/) }
+  end
+
 end

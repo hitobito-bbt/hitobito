@@ -29,11 +29,10 @@ class GroupSettingDecorator < ApplicationDecorator
   end
 
   def formatted_value(attr)
-    if attr.eql?(:password)
-      '****'
-    else
-      object.send(attr)
-    end
+    return '****' if attr.eql?(:password)
+
+    value = object.send(attr)
+    value || '-'
   end
 
 end
