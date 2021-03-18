@@ -35,7 +35,8 @@ module Imap
 
   def fetch_by_uid(uid, mailbox_id = 'INBOX')
     imap.select(mailbox_id)
-    imap.uid_fetch(uid, attributes)[0]
+    mail = imap.uid_fetch(uid, attributes)
+    mail.nil? ? mail : mail[0]
   end
 
   def move_by_uid(uid, from_mailbox_id, to_mailbox_id)
@@ -55,7 +56,7 @@ module Imap
 
     num_messages = imap.status(mailbox, ['MESSAGES'])['MESSAGES']
     if num_messages.positive?
-      @imap.fetch(1..num_messages, attributes) || []
+      imap.fetch(1..num_messages, attributes) || []
     else
       []
     end

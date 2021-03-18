@@ -24,11 +24,11 @@ class VariousAbility < AbilityDsl::Base
     permission(:any).may(:create, :update, :destroy, :read).own
   end
 
-  on(Mail) do
+  on(CatchAllMail) do
     class_side(:index).if_admin
     class_side(:show).if_admin
     class_side(:update).if_admin
-    permission(:admin).may(:show).all
+    class_side(:destroy).if_admin
   end
 
   if Group.course_types.present?
