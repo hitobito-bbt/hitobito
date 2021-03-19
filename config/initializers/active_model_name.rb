@@ -15,6 +15,7 @@ module ActiveModel
         super(*args)
         return if @klass == Oauth::Application
         return if @klass == GroupSetting
+        return if @klass == CatchAllMail
 
         if @klass != @klass.base_class
           base_name = @klass.base_class.model_name
