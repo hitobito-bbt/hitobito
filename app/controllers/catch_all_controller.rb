@@ -23,7 +23,7 @@ class CatchAllController < ApplicationController
   end
 
   def show
-    mail
+    redirect_to mailbox_index_path if mail.nil?
   end
 
   def move
@@ -71,7 +71,13 @@ class CatchAllController < ApplicationController
   end
 
   def mail
-    @mail ||= CatchAllMail.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
+    if @mail.present?
+      return @mail
+    end
+
+    mail = fetch_by_uid(param_uid, param_mailbox)
+    @mail = mail.nil? ? nil : CatchAllMail.new(mail, param_mailbox)
+
   end
 
 end
