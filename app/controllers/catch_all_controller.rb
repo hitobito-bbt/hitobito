@@ -11,7 +11,7 @@ class CatchAllController < ApplicationController
 
   include Imap
 
-  authorize_resource
+  authorize_resource CatchAllMail
 
   def initialize
     super

@@ -25,10 +25,7 @@ class VariousAbility < AbilityDsl::Base
   end
 
   on(CatchAllMail) do
-    class_side(:index).if_admin
-    class_side(:show).if_admin
-    class_side(:update).if_admin
-    class_side(:destroy).if_admin
+    permission(:admin).may(:manage).all
   end
 
   if Group.course_types.present?
