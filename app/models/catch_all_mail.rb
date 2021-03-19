@@ -13,10 +13,9 @@ class CatchAllMail
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-
   attr_accessor :uid, :mailbox, :subject, :date, :sender, :body
 
-  def initialize(imap_fetch_data=nil, mailbox='')
+  def initialize(imap_fetch_data = nil, mailbox = '')
 
     @mailbox = mailbox
 
@@ -27,14 +26,14 @@ class CatchAllMail
       @sender = ''
       @body = ''
     else
-      @uid = imap_fetch_data.attr['UID']
+      @uid = imap_fetch_data['UID']
 
-      env = imap_fetch_data.attr['ENVELOPE']
+      env = imap_fetch_data['ENVELOPE']
       @subject = env.subject
       @date = env.date
       @sender = env.sender[0].mailbox + '@' + env.sender[0].host
 
-      body_with_encoding_error = imap_fetch_data.attr['BODY[TEXT]']
+      body_with_encoding_error = imap_fetch_data['BODY[TEXT]']
       @body = body_with_encoding_error.to_s.force_encoding('UTF-8')
     end
 
@@ -43,7 +42,6 @@ class CatchAllMail
   def persisted?
     false
   end
-
 
 end
 
