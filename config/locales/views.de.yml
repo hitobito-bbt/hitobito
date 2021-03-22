@@ -527,6 +527,10 @@ de:
 
   mails:
     manage: Mails verwalten
+    mailboxes:
+      inbox: Inbox
+      spam: Spam
+      failed: Failed
 
   filter_navigation/dropdown:
     additional_views: 'Weitere Ansichten'

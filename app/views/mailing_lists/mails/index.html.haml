@@ -4,6 +4,7 @@
 -#  https://github.com/hitobito/hitobito.
 
 - title t('mails.manage')
+= FilterNavigation::MailingList::Mails.new(self).to_s
 
 = render('mailing_lists/mails/' + param_mailbox.to_s.downcase)
 

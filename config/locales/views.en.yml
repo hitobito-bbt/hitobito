@@ -465,11 +465,10 @@ en:
 
   mails:
     manage: Manage Mails
-    show: Show Mail
     move: Move
     mailboxes:
       inbox: Inbox
-      spam: Spam
+      spamming: Spam
       failed: Failed
     move_inbox: Move to Inbox
     move_spam: Move to Spam
