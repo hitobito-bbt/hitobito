@@ -67,11 +67,11 @@ class MailingLists::MailsController < ApplicationController
   end
 
   def map_to_catch_all_mail(mails, mailbox)
-    mails.map { |m| MailingList::Mails.new(imap_fetch_data = m, mailbox = mailbox) }
+    mails.map { |m| MailingList::Mail.new(imap_fetch_data = m, mailbox = mailbox) }
   end
 
   def mail
-    @mail ||= MailingList::Mails.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
+    @mail ||= MailingList::Mail.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
   end
 
 end

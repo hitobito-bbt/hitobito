@@ -7,7 +7,7 @@
 
 require 'net/imap'
 
-class MailingList::Mails
+class MailingList::Mail
 
   include ActiveModel::Model
   include ActiveModel::Conversion
