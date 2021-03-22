@@ -53,7 +53,7 @@ class MailingLists::MailsController < ApplicationController
   end
 
   def load_mailbox_mails
-    @mails = fetch_all_from_mailbox(param_mailbox)
+    @mails = map_to_catch_all_mail(fetch_all_from_mailbox(param_mailbox.to_s), param_mailbox.to_s)
   end
 
   def param_uid
