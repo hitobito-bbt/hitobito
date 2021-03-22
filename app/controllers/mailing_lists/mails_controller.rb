@@ -11,6 +11,8 @@ class MailingLists::MailsController < ApplicationController
 
   include Imap
 
+  after_action :disconnect
+
   skip_authorization_check
 
   def initialize
@@ -40,6 +42,11 @@ class MailingLists::MailsController < ApplicationController
 
   private
 
+  def disconnect
+    imap.close
+    imap.disconnect
+  end
+
   def mailboxes
     @mailboxes ||= { INBOX: 'Inbox', SPAMMING: 'Spam', FAILED: 'Failed' }.freeze
   end
@@ -67,11 +74,11 @@ class MailingLists::MailsController < ApplicationController
   end
 
   def map_to_catch_all_mail(mails, mailbox)
-    mails.map { |m| MailingList::Mail.new(imap_fetch_data = m, mailbox = mailbox) }
+    mails.map { |m| MailingList::Mail.new(imap_fetch_data: m, mailbox: mailbox) }
   end
 
   def mail
-    @mail ||= MailingList::Mail.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
+    @mail ||= MailingList::Mail.new(imap_fetch_data: fetch_by_uid(param_uid, param_mailbox), mailbox: param_mailbox)
   end
 
 end

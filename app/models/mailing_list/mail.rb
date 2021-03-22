@@ -9,14 +9,11 @@ require 'net/imap'
 
 class MailingList::Mail
 
-  include ActiveModel::Model
-  include ActiveModel::Conversion
-  extend ActiveModel::Naming
 
 
   attr_accessor :uid, :mailbox, :subject, :date, :sender, :body
 
-  def initialize(imap_fetch_data = nil, mailbox = '')
+  def initialize(imap_fetch_data: nil, mailbox: '')
 
     @mailbox = mailbox
 

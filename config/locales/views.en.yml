@@ -466,6 +466,14 @@ en:
   mails:
     manage: Manage Mails
     show: Show Mail
+    move: Move
+    mailboxes:
+      inbox: Inbox
+      spam: Spam
+      failed: Failed
+    move_inbox: Move to Inbox
+    move_spam: Move to Spam
+    move_failed: Move to Failed
 
   filter_navigation/dropdown:
     additional_views: 'Further views'

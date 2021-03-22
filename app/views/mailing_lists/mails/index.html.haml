@@ -5,16 +5,28 @@
 
 - title t('mails.manage')
 
-
-= section_table('Inbox', @mails[:inbox_mails]) do |m|
+= section_table(t('mails.mailboxes.inbox'), @mails[:inbox_mails]) do |m|
 
   %td
-    = link_to m.subject, ''
+    = m.subject
   %td
     = m.sender
   %td
     = m.date
   %td
+
+    = link_to t('mails.mailboxes.spam'),
+            mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'SPAMMING'),
+            class: 'action',
+            title: t("mails.move_spam"),
+            data: { method: :patch }
+
+    = link_to t('mails.mailboxes.failed'),
+        mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'FAILED'),
+        class: 'action',
+        title: t("mails.move_failed"),
+        data: { method: :patch }
+
     = link_to icon(:'trash-alt', filled: false),
             '',
             class: 'action',
@@ -24,17 +36,64 @@
                     method: :delete,
                    }
 
-%h2 Spam
-%ul
-- @mails[:spam_mails].each do |m|
-  %li
-    - subject = m.subject
-    = link_to subject, ''
+= section_table(t('mails.mailboxes.spam'), @mails[:spam_mails]) do |m|
 
+  %td
+    = m.subject
+  %td
+    = m.sender
+  %td
+    = m.date
+  %td
 
-%h2 Failed
-%ul
-- @mails[:failed_mails].each do |m|
-  %li
-    - subject = m.subject
-    = link_to subject, ''
+    = link_to t('mails.mailboxes.inbox'),
+            mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'INBOX'),
+            class: 'action',
+            title: t("mails.move_inbox"),
+            data: { method: :patch }
+
+    = link_to t('mails.mailboxes.failed'),
+        mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'FAILED'),
+        class: 'action',
+        title: t("mails.move_failed"),
+        data: { method: :patch }
+
+    = link_to icon(:'trash-alt', filled: false),
+            '',
+            class: 'action',
+            title: ti(:"link.delete"),
+            alt: ti(:"link.delete"),
+            data: { confirm: ti(:confirm_delete),
+                    method: :delete,
+                   }
+
+= section_table(t('mails.mailboxes.failed'), @mails[:spam_mails]) do |m|
+
+  %td
+    = m.subject
+  %td
+    = m.sender
+  %td
+    = m.date
+  %td
+
+    = link_to t('mails.mailboxes.inbox'),
+            mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'INBOX'),
+            class: 'action',
+            title: t("mails.move_inbox"),
+            data: { method: :patch }
+
+    = link_to t('mails.mailboxes.spam'),
+        mailing_lists_mail_move_path(mail_mailbox: m.mailbox, uid: m.uid, move_to: 'SPAMMING'),
+        class: 'action',
+        title: t("mails.move_spam"),
+        data: { method: :patch }
+
+    = link_to icon(:'trash-alt', filled: false),
+            '',
+            class: 'action',
+            title: ti(:"link.delete"),
+            alt: ti(:"link.delete"),
+            data: { confirm: ti(:confirm_delete),
+                    method: :delete,
+                   }
