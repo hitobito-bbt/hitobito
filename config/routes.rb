@@ -254,10 +254,7 @@ Hitobito::Application.routes.draw do
     resources :event_kinds, module: 'event', controller: 'kinds'
 
     namespace :mailing_lists do
-      resources :mails, only: :index, param: :mailbox do
-        delete ':uid'         => 'mails#destroy', as: :destroy
-        patch ':uid/:move_to' => 'mails#move', as: :move
-      end
+      resources :mails, only: :index, param: :mailbox
     end
 
     resources :qualification_kinds

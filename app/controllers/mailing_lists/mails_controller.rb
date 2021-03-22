@@ -11,17 +11,16 @@ class MailingLists::MailsController < ApplicationController
 
   include Imap
 
-  after_action :disconnect
-
   skip_authorization_check
+
+  helper_method :param_mailbox
 
   def initialize
     super
-    load_mailboxes
   end
 
   def index
-    mails
+    load_mailbox_mails
   end
 
   def show
@@ -42,19 +41,19 @@ class MailingLists::MailsController < ApplicationController
 
   private
 
-  def disconnect
-    imap.close
-    imap.disconnect
-  end
-
   def mailboxes
     @mailboxes ||= { INBOX: 'Inbox', SPAMMING: 'Spam', FAILED: 'Failed' }.freeze
   end
 
-  def load_mailboxes
+  def load_mailbox(mailbox)
+    mail
     mailboxes.each do |id, mailbox|
       instance_variable_set("@#{mailbox.to_s.downcase}_mails", map_to_catch_all_mail(fetch_all_from_mailbox(id.to_s), id.to_s))
     end
+  end
+
+  def load_mailbox_mails
+    @mails = fetch_all_from_mailbox(param_mailbox)
   end
 
   def param_uid
@@ -66,19 +65,15 @@ class MailingLists::MailsController < ApplicationController
   end
 
   def param_mailbox
-    params[:mailbox_id]
-  end
-
-  def mails
-    @mails ||= { inbox_mails: @inbox_mails, spam_mails: @spam_mails, failed_mails: @failed_mails }
+    params.key?(:mailbox) ? params[:mailbox] : 'INBOX'
   end
 
   def map_to_catch_all_mail(mails, mailbox)
-    mails.map { |m| MailingList::Mail.new(imap_fetch_data: m, mailbox: mailbox) }
+    mails.map { |m| MailingList::Mails.new(imap_fetch_data: m, mailbox: mailbox) }
   end
 
   def mail
-    @mail ||= MailingList::Mail.new(imap_fetch_data: fetch_by_uid(param_uid, param_mailbox), mailbox: param_mailbox)
+    @mail ||= MailingList::Mails.new(imap_fetch_data: fetch_by_uid(param_uid, param_mailbox), mailbox: param_mailbox)
   end
 
 end

@@ -7,9 +7,7 @@
 
 require 'net/imap'
 
-class MailingList::Mail
-
-
+class MailingList::Mails
 
   attr_accessor :uid, :mailbox, :subject, :date, :sender, :body
 
