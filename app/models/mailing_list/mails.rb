@@ -7,7 +7,7 @@
 
 require 'net/imap'
 
-class CatchAllMail
+class MailingList::Mails
 
   include ActiveModel::Model
   include ActiveModel::Conversion
@@ -16,7 +16,7 @@ class CatchAllMail
 
   attr_accessor :uid, :mailbox, :subject, :date, :sender, :body
 
-  def initialize(imap_fetch_data=nil, mailbox='')
+  def initialize(imap_fetch_data = nil, mailbox = '')
 
     @mailbox = mailbox
 
@@ -43,7 +43,6 @@ class CatchAllMail
   def persisted?
     false
   end
-
 
 end
 

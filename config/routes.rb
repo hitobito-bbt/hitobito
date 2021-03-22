@@ -253,10 +253,11 @@ Hitobito::Application.routes.draw do
 
     resources :event_kinds, module: 'event', controller: 'kinds'
 
-    resources :catch_all, only: :index, as: :mailbox do
-      get ':uid' => 'catch_all#show', as: :show_mail
-      delete ':uid' => 'catch_all#destroy', as: :destroy_mail
-      patch ':uid/:move_to' => 'catch_all#move', as: :move_mail
+    namespace :mailing_lists do
+      resources :mails, only: :index, param: :mailbox do
+        delete ':uid'         => 'mails#destroy', as: :destroy
+        patch ':uid/:move_to' => 'mails#move', as: :move
+      end
     end
 
     resources :qualification_kinds

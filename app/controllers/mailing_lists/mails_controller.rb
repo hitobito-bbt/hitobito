@@ -7,7 +7,7 @@
 
 require 'net/imap'
 
-class CatchAllController < ApplicationController
+class MailingLists::MailsController < ApplicationController
 
   include Imap
 
@@ -67,11 +67,11 @@ class CatchAllController < ApplicationController
   end
 
   def map_to_catch_all_mail(mails, mailbox)
-    mails.map { |m| CatchAllMail.new(imap_fetch_data = m, mailbox = mailbox) }
+    mails.map { |m| MailingList::Mails.new(imap_fetch_data = m, mailbox = mailbox) }
   end
 
   def mail
-    @mail ||= CatchAllMail.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
+    @mail ||= MailingList::Mails.new(fetch_by_uid(param_uid, param_mailbox), param_mailbox)
   end
 
 end

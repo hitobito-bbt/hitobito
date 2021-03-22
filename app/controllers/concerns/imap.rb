@@ -33,8 +33,8 @@ module Imap
     imap.disconnect
   end
 
-  def fetch_by_uid(uid, mailbox_id = 'INBOX')
-    imap.select(mailbox_id)
+  def fetch_by_uid(uid, mail_mailbox = 'INBOX')
+    imap.select(mail_mailbox)
     imap.uid_fetch(uid, attributes)[0]
   end
 
@@ -53,12 +53,8 @@ module Imap
   def fetch_all_from_mailbox(mailbox = 'INBOX')
     imap.select(mailbox)
 
-    num_messages = imap.status(mailbox, ['MESSAGES'])['MESSAGES']
-    if num_messages.positive?
-      @imap.fetch(1..num_messages, attributes) || []
-    else
-      []
-    end
+    messages_count = imap.status(mailbox, ['MESSAGES'])['MESSAGES']
+    messages_count.positive? ? @imap.fetch(1..messages_count, attributes) || [] : []
   end
 
   def host
