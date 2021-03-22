@@ -15,7 +15,7 @@ module FilterNavigation
       end
 
       def active_label
-        label_for_filter(template.params.fetch(:mailbox, 'inbox'))
+        label_for_filter(template.params.fetch(:mailbox_id, 'inbox'))
       end
 
       private

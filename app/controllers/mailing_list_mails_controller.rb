@@ -7,7 +7,7 @@
 
 require 'net/imap'
 
-class MailingLists::MailsController < ApplicationController
+class MailingListMailsController < ApplicationController
 
   include Imap
 
@@ -65,7 +65,7 @@ class MailingLists::MailsController < ApplicationController
   end
 
   def param_mailbox
-    params.key?(:mailbox) ? params[:mailbox] : 'INBOX'
+    params.key?(:mailbox_id) ? params[:mailbox_id] : 'INBOX'
   end
 
   def map_to_catch_all_mail(mails, mailbox)
