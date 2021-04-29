@@ -113,7 +113,7 @@ class Imap::Connector
   end
 
   def settings_present?
-    !Settings.email.retriever.config.nil?
+    Settings.email&.retriever&.config.present?
   end
 
   def attributes

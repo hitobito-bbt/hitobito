@@ -21,6 +21,20 @@ describe Imap::Connector do
 
   let(:fetch_attributes) { %w(ENVELOPE UID BODYSTRUCTURE BODY[TEXT] RFC822) }
 
+  before do
+    email = double
+    retriever = double
+    config = double('config',
+                    address: 'imap.example.com',
+                    port: 995,
+                    enable_ssl: true,
+                    user_name: 'catch-all@example.com',
+                    password: 'holly-secret')
+    allow(Settings).to receive(:email).and_return(email)
+    allow(email).to receive(:retriever).and_return(retriever)
+    allow(retriever).to receive(:config).and_return(config)
+  end
+
   describe '#move_by_uid' do
     it 'moves mail to existing mailbox' do
       # connect

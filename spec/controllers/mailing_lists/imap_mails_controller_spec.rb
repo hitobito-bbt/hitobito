@@ -19,7 +19,12 @@ describe MailingLists::ImapMailsController do
   before do
     email = double
     retriever = double
-    config = 'address: imap.example.com, port: 995, user_name: catch-all@example.com, password: holly-secret'
+    config = double('config',
+                    address: 'imap.example.com',
+                    port: 995,
+                    enable_ssl: true,
+                    user_name: 'catch-all@example.com',
+                    password: 'holly-secret')
     allow(Settings).to receive(:email).and_return(email)
     allow(email).to receive(:retriever).and_return(retriever)
     allow(retriever).to receive(:config).and_return(config)
@@ -32,7 +37,7 @@ describe MailingLists::ImapMailsController do
       # mock imap_connector
       expect(controller).to receive(:imap).and_return(imap_connector)
       expect(imap_connector).to receive(:fetch_mails).with(:inbox).and_return(imap_mail_data)
-
+s
       get :index, params: { mailbox: 'inbox' }
 
       expect(response).to have_http_status(:success)

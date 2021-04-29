@@ -21,6 +21,20 @@ describe MailingLists::ImapMailsMoveController do
 
   let(:now) { Time.zone.now }
 
+  before do
+    email = double
+    retriever = double
+    config = double('config',
+                    address: 'imap.example.com',
+                    port: 995,
+                    enable_ssl: true,
+                    user_name: 'catch-all@example.com',
+                    password: 'holly-secret')
+    allow(Settings).to receive(:email).and_return(email)
+    allow(email).to receive(:retriever).and_return(retriever)
+    allow(retriever).to receive(:config).and_return(config)
+  end
+
   context 'PATCH #create' do
     it 'moves Mail to given mailbox' do
       sign_in(top_leader)
@@ -88,7 +102,7 @@ describe MailingLists::ImapMailsMoveController do
       expect do
         patch :create, params: { mailbox: 'failed', ids: '42', mail_dst: 'inbox' }
       end.to raise_error('failed mails cannot be moved')
-    end  
+    end
 
   end
 
