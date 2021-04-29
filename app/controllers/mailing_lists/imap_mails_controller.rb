@@ -47,7 +47,13 @@ class MailingLists::ImapMailsController < ApplicationController
   end
 
   def counts
-    imap.counts
+    fetch_counts || {}
+  end
+
+  def fetch_counts
+    perform_imap do
+      imap.counts
+    end
   end
 
   def destroy_flash_message

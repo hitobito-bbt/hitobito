@@ -96,7 +96,7 @@ describe MailingLists::ImapMailsController do
 
       expect(mails.count).to eq(0)
       expect(flash[:alert])
-        .to eq('Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut')
+        .to eq(["Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut", "Authentication failed."])
     end
 
     it 'denies access for non admin' do
@@ -105,6 +105,63 @@ describe MailingLists::ImapMailsController do
       expect do
         get :index, params: { mailbox: 'inbox' }
       end.to raise_error(CanCan::AccessDenied)
+    end
+
+    it 'displays flash if imap server not reachable' do
+      sign_in(top_leader)
+
+      # mock imap_connector
+      expect(controller).to receive(:imap).and_return(imap_connector)
+
+      expect(imap_connector).to receive(:fetch_mails).with(:inbox).and_raise(Errno::EADDRNOTAVAIL)
+
+      get :index, params: { mailbox: 'inbox' }
+
+      expect(response).to have_http_status(:success)
+
+      mails = controller.send(:mails)
+
+      expect(mails.count).to eq(0)
+      expect(flash[:alert])
+        .to eq(["Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut", "Cannot assign requested address"])
+    end
+
+    it 'displays flash if imap server dns unresolvable' do
+      sign_in(top_leader)
+
+      # mock imap_connector
+      expect(controller).to receive(:imap).and_return(imap_connector)
+
+      expect(imap_connector).to receive(:fetch_mails).with(:inbox).and_raise(SocketError)
+
+      get :index, params: { mailbox: 'inbox' }
+
+      expect(response).to have_http_status(:success)
+
+      mails = controller.send(:mails)
+
+      expect(mails.count).to eq(0)
+      expect(flash[:alert])
+        .to eq(['Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut', 'SocketError'])
+    end
+
+    it 'displays flash if imap server credentials invalid' do
+      sign_in(top_leader)
+
+      # mock imap_connector
+      expect(controller).to receive(:imap).and_return(imap_connector)
+
+      expect(imap_connector).to receive(:fetch_mails).with(:inbox).and_raise(Net::IMAP::NoResponseError, ImapErrorDataDouble)
+
+      get :index, params: { mailbox: 'inbox' }
+
+      expect(response).to have_http_status(:success)
+
+      mails = controller.send(:mails)
+
+      expect(mails.count).to eq(0)
+      expect(flash[:alert])
+        .to eq(['Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut', 'Authentication failed.'])
     end
   end
 
@@ -129,28 +186,6 @@ describe MailingLists::ImapMailsController do
       expect do
         delete :destroy, params: { mailbox: 'inbox', ids: '42' }
       end.to raise_error(CanCan::AccessDenied)
-    end
-
-    it 'displays flash notice if mail server not reachable' do
-      sign_in(top_leader)
-
-      # mock imap_connector
-      expect(controller).to receive(:imap).and_return(imap_connector)
-
-      expect(imap_connector)
-        .to receive(:delete_by_uid)
-        .with(42, :inbox)
-        .and_raise(Net::IMAP::NoResponseError, ImapErrorDataDouble)
-
-      delete :destroy, params: { mailbox: 'inbox', ids: '42' }
-
-      expect(response).to have_http_status(:redirect)
-
-      mails = controller.view_context.mails
-
-      expect(mails.count).to eq(0)
-      expect(flash[:notice])
-        .to eq('Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut')
     end
 
   end
@@ -212,7 +247,7 @@ describe MailingLists::ImapMailsController do
   module ImapErrorDataDouble
     Data = Struct.new(:text)
     def self.data
-      data = Data.new('failure!')
+      data = Data.new('Authentication failed.')
       data
     end
   end

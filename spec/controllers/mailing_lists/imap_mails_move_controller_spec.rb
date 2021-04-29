@@ -69,6 +69,9 @@ describe MailingLists::ImapMailsMoveController do
 
     it 'does not allow non-admins to move mails' do
       sign_in(people(:bottom_member))
+
+      expect(controller).to receive(:imap).never
+
       expect do
         patch :create, params: { mailbox: 'inbox', ids: '42' }
       end.to raise_error(CanCan::AccessDenied)
@@ -90,7 +93,7 @@ describe MailingLists::ImapMailsMoveController do
       expect(response).to have_http_status(:redirect)
 
       expect(flash[:notice])
-        .to eq('Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut')
+        .to eq(["Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut", "failure!"])
     end
 
     it 'cannot move mails from failed mailbox' do

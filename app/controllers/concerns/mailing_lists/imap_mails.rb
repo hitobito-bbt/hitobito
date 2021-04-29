@@ -5,8 +5,14 @@
 #  or later. See the COPYING file at the top-level directory or at
 #  https://github.com/hitobito/hitobito.
 
+require 'net/imap'
+
 module MailingLists::ImapMails
   extend ActiveSupport::Concern
+
+  IMAP_SERVER_ERRORS = [Net::IMAP::ResponseError,
+                        Errno::EADDRNOTAVAIL,
+                        SocketError].freeze
 
   private
 
@@ -29,9 +35,12 @@ module MailingLists::ImapMails
   end
 
   def perform_imap
+    return if @server_error
+
     yield
-  rescue Net::IMAP::ResponseError
+  rescue *IMAP_SERVER_ERRORS => e
     @server_error = true
+    @server_error_message = e.message
   end
 
   def i18n_prefix
@@ -40,7 +49,7 @@ module MailingLists::ImapMails
 
   def server_error_message
     if @server_error
-      I18n.t("#{i18n_prefix}.flash.server_error")
+      [I18n.t("#{i18n_prefix}.flash.server_error"), @server_error_message]
     end
   end
 
