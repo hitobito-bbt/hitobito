@@ -37,7 +37,7 @@ describe MailingLists::ImapMailsController do
       # mock imap_connector
       expect(controller).to receive(:imap).and_return(imap_connector)
       expect(imap_connector).to receive(:fetch_mails).with(:inbox).and_return(imap_mail_data)
-s
+
       get :index, params: { mailbox: 'inbox' }
 
       expect(response).to have_http_status(:success)
