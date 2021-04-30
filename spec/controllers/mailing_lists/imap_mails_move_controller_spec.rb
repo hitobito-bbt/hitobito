@@ -86,7 +86,7 @@ describe MailingLists::ImapMailsMoveController do
       expect(imap_connector)
         .to receive(:move_by_uid)
         .with(42, :inbox, :failed)
-        .and_raise(Net::IMAP::NoResponseError, ImapErrorDataDouble)
+        .and_raise(Net::IMAP::NoResponseError, ImapMoveErrorDataDouble)
 
       patch :create, params: { mailbox: 'inbox', ids: '42', dst_mailbox: 'failed' }
 
@@ -108,6 +108,8 @@ describe MailingLists::ImapMailsMoveController do
     end
 
   end
+
+  private
 
   def new_mail(text_body = true)
     imap_mail = Net::IMAP::FetchData.new(Faker::Number.number(digits: 1), mail_attrs(text_body))
@@ -157,6 +159,16 @@ describe MailingLists::ImapMailsMoveController do
     html_message.body('<h1>Starship flies!</h1>')
     html_message.text_part = ''
     html_message
+  end
+
+  # and_raise only accepts either String or Module
+  # so creating a double with a Module
+  module ImapMoveErrorDataDouble
+    Data = Struct.new(:text)
+    def self.data
+      data = Data.new('Authentication failed.')
+      data
+    end
   end
 
 end

@@ -206,6 +206,8 @@ describe Imap::Connector do
     end
   end
 
+  private
+
   def no_mailbox_error(text = '')
     response_text = Net::IMAP::ResponseText.new(nil, text)
     Net::IMAP::NoResponseError.new(Net::IMAP::TaggedResponse.new(nil, nil, response_text, nil))
