@@ -26,7 +26,7 @@ describe MailingLists::ImapMailsMoveController do
     retriever = double
     config = double('config',
                     address: 'imap.example.com',
-                    port: 995,
+                    imap_port: 995,
                     enable_ssl: true,
                     user_name: 'catch-all@example.com',
                     password: 'holly-secret')
