@@ -93,7 +93,7 @@ describe MailingLists::ImapMailsMoveController do
       expect(response).to have_http_status(:redirect)
 
       expect(flash[:notice])
-        .to eq(["Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut", "failure!"])
+        .to eq(["Verbindung zum Mailserver nicht möglich, bitte versuche es später erneut", "Authentication failed."])
     end
 
     it 'cannot move mails from failed mailbox' do
@@ -157,16 +157,6 @@ describe MailingLists::ImapMailsMoveController do
     html_message.body('<h1>Starship flies!</h1>')
     html_message.text_part = ''
     html_message
-  end
-
-  # and_raise only accepts either String or Module
-  # so creating a double with a Module
-  module ImapErrorDataDouble
-    Data = Struct.new(:text)
-    def self.data
-      data = Data.new('failure!')
-      data
-    end
   end
 
 end
